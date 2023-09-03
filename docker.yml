@@ -13,7 +13,7 @@
       dnf:
         name: docker
         state: present
-    - name: "Restart and enbale docker"
+    - name: "Restart and enable docker"
       when: ansible_os_family=="RedHat" and ansible_distribution=="Amazon"
       service:
         name: docker

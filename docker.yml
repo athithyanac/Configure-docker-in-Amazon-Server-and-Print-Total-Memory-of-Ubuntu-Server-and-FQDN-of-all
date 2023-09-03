@@ -1,0 +1,40 @@
+---
+- name: "Install docker"
+  become: true
+  hosts: all
+  tasks:
+    - name: "Update all pkgs"
+      when: ansible_os_family=="RedHat" and ansible_distribution=="Amazon"
+      dnf:
+        name: "*"
+        state: latest
+    - name: "Install docker"
+      when: ansible_os_family=="RedHat" and ansible_distribution=="Amazon"
+      dnf:
+        name: docker
+        state: present
+    - name: "Restart and enbale docker"
+      when: ansible_os_family=="RedHat" and ansible_distribution=="Amazon"
+      service:
+        name: docker
+        state: restarted
+        enabled: true
+    - name: "Add user ec2-user to group docker"
+      when: ansible_os_family=="RedHat" and ansible_distribution=="Amazon"
+      user:
+        name: ec2-user
+        append: true
+        groups:
+          - docker
+    - name: "Print Total memory in ubuntu"
+      when: ansible_os_family=="Debian" and ansible_distribution=="Ubuntu"
+      debug:
+        msg: "Total memory is {{ansible_memory_mb.real.total}}"
+    - name: "Print fqdn of Amazon"
+      when: ansible_os_family=="RedHat" and ansible_distribution=="Amazon"
+      debug:
+        msg: "Host name of {{ansible_distribution}} {{ansible_fqdn}}"
+    - name: "Print fqdn of Ubuntu"
+      when: ansible_os_family=="Debian" and ansible_distribution=="Ubuntu"
+      debug:
+        msg: "Host name of {{ansible_distribution}} {{ansible_fqdn}}"
